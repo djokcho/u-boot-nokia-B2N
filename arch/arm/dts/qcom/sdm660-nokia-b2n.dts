@@ -14,8 +14,8 @@
 #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 
 / {
-	model = "Xiaomi Mi Note 3";
-	compatible = "xiaomi,jason", "qcom,sdm660";
+	model = "Nokia 7 Plus";
+	compatible = "nokia,b2n", "qcom,sdm660";
 	chassis-type = "handset";
 
 	aliases {
@@ -31,9 +31,9 @@
 
 		framebuffer0: framebuffer@9d400000 {
 			compatible = "simple-framebuffer";
-			reg = <0 0x9d400000 0 (1080 * 1920 * 4)>;
+			reg = <0 0x9d400000 0 (1080 * 2160 * 4)>;
 			width = <1080>;
-			height = <1920>;
+			height = <2160>;
 			stride = <(1080 * 4)>;
 			format = "a8r8g8b8";
 		};
@@ -80,14 +80,15 @@ jason:/ # cat /sys/module/ramoops/parameters/*
 2097152		pmsg_size	0x200000
 0		record_size	0x0
 */
-		ramoops@b0000000 {
-			compatible = "ramoops";
-			reg = <0x0 0xb0000000 0x0 0x400000>;
-			console-size = <0x200000>;
-			record-size = <0x0>;
-			ftrace-size = <0x0>;
-			pmsg-size = <0x200000>;
-		};
+ramoops@ac800000 {
+    compatible = "ramoops";
+    reg = <0x0 0xac800000 0x0 0x200000>; /* 2 MB reserved */
+    console-size = <0x40000>;   /* 256 KB */
+    record-size  = <0x1000>;    /* 4 KB per record */
+    ftrace-size  = <0x1000>;    /* 4 KB */
+    pmsg-size    = <0x1000>;    /* 4 KB */
+};
+
 
 		framebuffer_mem: memory@9d400000 {
 			reg = <0x0 0x9d400000 0x0 0x23ff000>;
@@ -380,6 +381,14 @@ jason:/ # cat /sys/module/ramoops/parameters/*
 			regulator-max-microvolt = <2952000>;
 			regulator-enable-ramp-delay = <250>;
 		};
+
+//specific ldoa18 regulator if display doesnt bring up on b2n
+        //vreg_l18a-ldoa18 {
+		//status = "okay";
+		//pm660_l18: regulator-l18 {
+			//regulator-min-microvolt = <1780000>;
+			//regulator-max-microvolt = <1950000>;
+
 
 		vreg_l19a_3p3: l19 {
 			regulator-min-microvolt = <3312000>;
